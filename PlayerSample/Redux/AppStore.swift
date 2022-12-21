@@ -13,7 +13,7 @@ final class Store<State, Action>: ObservableObject {
     init(
         state: State,
         reducer: @escaping Reducer<State, Action>,
-        middlewares:  [Middleware<State, Action>]
+        middlewares: [Middleware<State, Action>]
     ) {
         self.state = state
         self.reducer = reducer

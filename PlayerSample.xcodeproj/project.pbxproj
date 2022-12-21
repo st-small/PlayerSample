@@ -11,7 +11,6 @@
 		5249219B294733E300E882D5 /* ContentViewList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5249219A294733E300E882D5 /* ContentViewList.swift */; };
 		5249219D294733E500E882D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5249219C294733E500E882D5 /* Assets.xcassets */; };
 		524921A0294733E500E882D5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5249219F294733E500E882D5 /* Preview Assets.xcassets */; };
-		524921A72947352D00E882D5 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524921A62947352D00E882D5 /* AudioManager.swift */; };
 		524921A92947512A00E882D5 /* Merry-Christmas-Jingle-Bells.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 524921A82947512A00E882D5 /* Merry-Christmas-Jingle-Bells.mp3 */; };
 		524921AD2947786500E882D5 /* v-lesu-rodilas-elochka.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 524921AC2947786500E882D5 /* v-lesu-rodilas-elochka.mp3 */; };
 		524921AF294875DA00E882D5 /* Injected.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524921AE294875DA00E882D5 /* Injected.swift */; };
@@ -21,6 +20,8 @@
 		524921C22949FAAC00E882D5 /* AppAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524921C12949FAAC00E882D5 /* AppAction.swift */; };
 		524921C42949FAD600E882D5 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524921C32949FAD600E882D5 /* AppState.swift */; };
 		524921C6294A019300E882D5 /* AudioService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524921C5294A019300E882D5 /* AudioService.swift */; };
+		52A2802F29507C78002883DE /* Array + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A2802E29507C78002883DE /* Array + Extensions.swift */; };
+		52A2803129507DA1002883DE /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A2803029507DA1002883DE /* HomeScreen.swift */; };
 		52D08476294B2E23004FE44D /* AudioItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D08475294B2E23004FE44D /* AudioItem.swift */; };
 		52D08479294B2EB8004FE44D /* DateComponentsFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D08478294B2EB8004FE44D /* DateComponentsFormatter.swift */; };
 /* End PBXBuildFile section */
@@ -31,7 +32,6 @@
 		5249219A294733E300E882D5 /* ContentViewList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewList.swift; sourceTree = "<group>"; };
 		5249219C294733E500E882D5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5249219F294733E500E882D5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		524921A62947352D00E882D5 /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 		524921A82947512A00E882D5 /* Merry-Christmas-Jingle-Bells.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Merry-Christmas-Jingle-Bells.mp3"; sourceTree = "<group>"; };
 		524921AC2947786500E882D5 /* v-lesu-rodilas-elochka.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "v-lesu-rodilas-elochka.mp3"; sourceTree = "<group>"; };
 		524921AE294875DA00E882D5 /* Injected.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injected.swift; sourceTree = "<group>"; };
@@ -41,6 +41,8 @@
 		524921C12949FAAC00E882D5 /* AppAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAction.swift; sourceTree = "<group>"; };
 		524921C32949FAD600E882D5 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		524921C5294A019300E882D5 /* AudioService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioService.swift; sourceTree = "<group>"; };
+		52A2802E29507C78002883DE /* Array + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array + Extensions.swift"; sourceTree = "<group>"; };
+		52A2803029507DA1002883DE /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		52D08475294B2E23004FE44D /* AudioItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioItem.swift; sourceTree = "<group>"; };
 		52D08478294B2EB8004FE44D /* DateComponentsFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateComponentsFormatter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -76,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				52492198294733E300E882D5 /* PlayerSampleApp.swift */,
+				52A2803029507DA1002883DE /* HomeScreen.swift */,
 				5249219A294733E300E882D5 /* ContentViewList.swift */,
 				52D08474294B2E11004FE44D /* Model */,
 				524921BA2949FA0C00E882D5 /* Redux */,
@@ -122,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				52D08478294B2EB8004FE44D /* DateComponentsFormatter.swift */,
+				52A2802E29507C78002883DE /* Array + Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -137,7 +141,6 @@
 		52D0847B294B301C004FE44D /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				524921A62947352D00E882D5 /* AudioManager.swift */,
 				524921C5294A019300E882D5 /* AudioService.swift */,
 			);
 			path = Services;
@@ -217,7 +220,8 @@
 			files = (
 				52D08479294B2EB8004FE44D /* DateComponentsFormatter.swift in Sources */,
 				524921C6294A019300E882D5 /* AudioService.swift in Sources */,
-				524921A72947352D00E882D5 /* AudioManager.swift in Sources */,
+				52A2803129507DA1002883DE /* HomeScreen.swift in Sources */,
+				52A2802F29507C78002883DE /* Array + Extensions.swift in Sources */,
 				524921C22949FAAC00E882D5 /* AppAction.swift in Sources */,
 				524921BC2949FA1A00E882D5 /* AppStore.swift in Sources */,
 				524921C42949FAD600E882D5 /* AppState.swift in Sources */,

@@ -1,10 +1,13 @@
 import AVKit
 import Combine
 
+public enum AudioServiceResultType {
+    case playing(TimeInterval), end
+}
+
 public protocol AudioServiceProviding {
     func pause()
-    func seek(to: TimeInterval)
-    func play(trackUrl: URL, time: TimeInterval) -> AnyPublisher<TimeInterval, Never>
+    func play(trackUrl: URL, time: TimeInterval) -> AnyPublisher<AudioServiceResultType, Never>
 }
 
 final class AudioServiceProvider: NSObject, AudioServiceProviding, AVAudioPlayerDelegate {
@@ -16,7 +19,7 @@ final class AudioServiceProvider: NSObject, AudioServiceProviding, AVAudioPlayer
     private var player: AVAudioPlayer?
     private var cancellables: Set<AnyCancellable> = []
     
-    private var sync = PassthroughSubject<TimeInterval, Never>()
+    private var sync = PassthroughSubject<AudioServiceResultType, Never>()
     
     override init() {
         super.init()
@@ -25,13 +28,13 @@ final class AudioServiceProvider: NSObject, AudioServiceProviding, AVAudioPlayer
             .sink { [weak self] _ in
                 guard let player = self?.player else { return }
                 
-                self?.sync.send(player.currentTime)
+                self?.sync.send(.playing(player.currentTime))
             }
             .store(in: &cancellables)
     }
     
-    func play(trackUrl: URL, time: TimeInterval) -> AnyPublisher<TimeInterval, Never> {
-        sync = PassthroughSubject<TimeInterval, Never>()
+    func play(trackUrl: URL, time: TimeInterval) -> AnyPublisher<AudioServiceResultType, Never> {
+        sync = PassthroughSubject<AudioServiceResultType, Never>()
         
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
@@ -55,7 +58,7 @@ final class AudioServiceProvider: NSObject, AudioServiceProviding, AVAudioPlayer
         player?.pause()
     }
     
-    func seek(to: TimeInterval) {
-        player?.currentTime = to
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        sync.send(.end)
     }
 }

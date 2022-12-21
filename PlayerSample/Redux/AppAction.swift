@@ -14,8 +14,13 @@ enum AppAction {
     // Промотка трека к необходимому месту с помощью слайдера
     case seek(id: String, to: TimeInterval)
     
+    // Получение уведомления о том, что пользователь закончил промотку трека
+    case endSeek(id: String)
+    
     // Синхронизация текущего состояния исполнения между плеером и отображением прогресса
-    case synchronizeProgress(id: String, time: TimeInterval)
+    case synchronizeProgress(id: String, result: AudioServiceResultType)
+    
+    case endPlayerSession
     
     case nop
 }

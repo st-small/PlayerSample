@@ -23,7 +23,7 @@ struct PlayerSampleApp: App {
                 title: "Jingle Bells",
                 url: Bundle.main.url(forResource: "Merry-Christmas-Jingle-Bells", withExtension: "mp3")!,
                 time: 0,
-                duration: 0, // Вопрос: Как правильно тут посчитать длину трека???
+                duration: 0,
                 state: .pause
             ),
             AudioItem(
@@ -40,26 +40,8 @@ struct PlayerSampleApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentViewList()
+            HomeScreen()
                 .environmentObject(store)
         }
-    }
-}
-
-import AVKit
-
-extension Array where Element == AudioItem {
-    func durationsMap() -> Self {
-        var items = self
-        items.indices.forEach { idx in
-            do {
-                let player = try AVAudioPlayer(contentsOf: items[idx].url)
-                items[idx].duration = player.duration
-            } catch {
-                print("Fail to calculate track's duration \(error)")
-            }
-        }
-        
-        return items
     }
 }

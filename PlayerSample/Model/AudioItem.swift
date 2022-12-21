@@ -1,7 +1,7 @@
 import Foundation
 
 enum AudioItemState {
-    case pause, play
+    case pause, play, rewind
 }
 
 struct AudioItem: Equatable, Identifiable {

@@ -24,10 +24,10 @@ struct ContentViewList: View {
                         } else {
                             store.dispatch(.playTrack(id: item.id))
                         }
-                    } onEditing: {
-                        store.dispatch(.pauseTrack(id: item.id))
                     } onSeek: { interval in
                         store.dispatch(.seek(id: item.id, to: interval))
+                    } endSeek: {
+                        store.dispatch(.endSeek(id: item.id))
                     }
             }
         }
@@ -40,13 +40,17 @@ struct SoundView: View {
     // Props
     var title: String
     var duration: TimeInterval
-    var currentTime: TimeInterval
+    @State var currentTime: TimeInterval
     var isPlaying: Bool
     
     // Commands
     var onPlayPause: () -> Void
-    var onEditing: () -> Void
     var onSeek: (TimeInterval) -> Void
+    var endSeek: () -> Void
+    
+    private let timer = Timer
+        .publish(every: 0.1, on: .main, in: .common)
+        .autoconnect()
     
     var body: some View {
         VStack(spacing: 20) {
@@ -60,8 +64,13 @@ struct SoundView: View {
                 }
                 
                 VStack {
-                    Slider(value: .constant(currentTime), in: 0...duration) { editing in
+                    Slider(value: $currentTime, in: 0...duration) { editing in
                         
+                        onSeek(currentTime)
+                        
+                        if !editing {
+                            endSeek()
+                        }
                     }
                     
                     HStack {
@@ -76,5 +85,10 @@ struct SoundView: View {
             }
         }
         .padding()
+        .onReceive(timer) { _ in
+            if isPlaying {
+                currentTime += 0.1
+            }
+        }
     }
 }
