@@ -7,16 +7,14 @@
 
 import SwiftUI
 
-let store = AppStore(
-    state: .init(),
-    reducer: appReducer,
-    middlewares: [playerMiddleware(service: AudioServiceProvider())]
-)
-
 @main
 struct PlayerSampleApp: App {
+    
+    private let store: AppStore
 
     init() {
+        store = setupStore()
+        
         let items = [
             AudioItem(
                 id: "111",
@@ -40,8 +38,26 @@ struct PlayerSampleApp: App {
     
     var body: some Scene {
         WindowGroup {
-            HomeScreen()
+            HomeScreenConnector()
                 .environmentObject(store)
         }
     }
+}
+
+func setupStore() -> AppStore {
+    let store = AppStore(
+        state: .init(),
+        reducer: appReducer,
+        middlewares: []
+    )
+    
+    connectAudioPlayerDriver(to: store)
+    
+    return store
+}
+
+func connectAudioPlayerDriver(to store: AppStore) {
+    let audioPlayerOperator = AudioPlayerOperator()
+    let audioPlayerDriver = AudioPlayerDriver(store: store, operator: audioPlayerOperator)
+    store.subscribe(observer: audioPlayerDriver.subscribe(audioPlayerOperator))
 }

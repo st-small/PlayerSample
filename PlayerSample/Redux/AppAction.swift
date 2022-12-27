@@ -18,7 +18,7 @@ enum AppAction {
     case endSeek(id: String)
     
     // Синхронизация текущего состояния исполнения между плеером и отображением прогресса
-    case synchronizeProgress(id: String, result: AudioServiceResultType)
+    case synchronizeProgress(id: String, result: TimeInterval)
     
     case endPlayerSession
     

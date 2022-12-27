@@ -7,31 +7,47 @@
 
 import SwiftUI
 
+struct ContentViewListConnector: Connector {
+    func map(store: AppStore) -> some View {
+        let items = store.state.audioItemsState.audioItems
+        
+        return ContentViewList(audioItems: items)
+    }
+}
+
 struct ContentViewList: View {
 
-    @EnvironmentObject var store: AppStore
+    let audioItems: [AudioItem]
     
     var body: some View {
         ScrollView(.vertical) {
-            ForEach(store.state.audioItems) { item in
-                SoundView(
-                    title: item.title,
-                    duration: item.duration,
-                    currentTime: item.time,
-                    isPlaying: item.state == .play) {
-                        if item.state == .play {
-                            store.dispatch(.pauseTrack(id: item.id))
-                        } else {
-                            store.dispatch(.playTrack(id: item.id))
-                        }
-                    } onSeek: { interval in
-                        store.dispatch(.seek(id: item.id, to: interval))
-                    } endSeek: {
-                        store.dispatch(.endSeek(id: item.id))
-                    }
+            ForEach(audioItems) { item in
+                SoundViewConnector(id: item.id)
             }
         }
         .padding()
+    }
+}
+
+struct SoundViewConnector: Connector {
+    
+    let id: String
+    
+    func map(store: AppStore) -> some View {
+        let item = store.state.audioItemsState.audioItems.first(where: { $0.id == id })
+        let isPlaying = item?.state == .play
+
+        return SoundView(
+            title: item?.title ?? "",
+            duration: item?.duration ?? 500,
+            currentTime: Binding(
+                get: { item?.time ?? 0 },
+                set: { store.dispatch(.seek(id: item?.id ?? "", to: $0)) }),
+            isPlaying: isPlaying,
+            onPlayPause: { store.dispatch(isPlaying ? .pauseTrack(id: id) : .playTrack(id: id)) },
+            onSeek: { interval in store.dispatch(.seek(id: id, to: interval)) },
+            endSeek: { store.dispatch(.endSeek(id: id)) }
+        )
     }
 }
 
@@ -40,7 +56,7 @@ struct SoundView: View {
     // Props
     var title: String
     var duration: TimeInterval
-    @State var currentTime: TimeInterval
+    @Binding var currentTime: TimeInterval
     var isPlaying: Bool
     
     // Commands
@@ -48,9 +64,9 @@ struct SoundView: View {
     var onSeek: (TimeInterval) -> Void
     var endSeek: () -> Void
     
-    private let timer = Timer
-        .publish(every: 0.1, on: .main, in: .common)
-        .autoconnect()
+//    private let timer = Timer
+//        .publish(every: 0.1, on: .main, in: .common)
+//        .autoconnect()
     
     var body: some View {
         VStack(spacing: 20) {
@@ -85,10 +101,10 @@ struct SoundView: View {
             }
         }
         .padding()
-        .onReceive(timer) { _ in
-            if isPlaying {
-                currentTime += 0.1
-            }
-        }
+//        .onReceive(timer) { _ in
+//            if isPlaying {
+//                currentTime += 0.1
+//            }
+//        }
     }
 }

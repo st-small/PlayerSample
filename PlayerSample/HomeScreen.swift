@@ -7,9 +7,23 @@
 
 import SwiftUI
 
+struct HomeScreenConnector: Connector {
+    
+    func map(store: AppStore) -> some View {
+        let playingTrack = store.state.floatingBarState.currentTrackId
+        
+        return HomeScreen(
+            showSoundBar: playingTrack != nil,
+            id: playingTrack ?? ""
+        )
+    }
+}
+
 struct HomeScreen: View {
     
-    @EnvironmentObject var store: AppStore
+    // MARK: - Props
+    let showSoundBar: Bool
+    let id: String
     
     var body: some View {
         NavigationView {
@@ -17,50 +31,49 @@ struct HomeScreen: View {
                 Text("Sample player app")
                     .font(.headline)
                 
-                if
-                    let track = playerSessionTrack() {
-                    
-                    SoundBarView(
-                        title: track.title,
-                        duration: track.duration,
-                        currentTime: track.time,
-                        isPlaying: track.state == .play) {
-                            if track.state == .play {
-                                store.dispatch(.pauseTrack(id: track.id))
-                            } else {
-                                store.dispatch(.playTrack(id: track.id))
-                            }
-                        } onSeek: { time in
-                            store.dispatch(.seek(id: track.id, to: time))
-                        } endSeek: {
-                            store.dispatch(.endSeek(id: track.id))
-                        } endSession: {
-                            store.dispatch(.endPlayerSession)
-                        }
-
+                if showSoundBar {
+                    SoundBarConnector(id: id)
                 }
             }
             .toolbar {
                 NavigationLink {
-                    ContentViewList()
-                        .environmentObject(store)
+                    ContentViewListConnector()
                 } label: {
                     Text("Open track list")
                 }
             }
         }
     }
-    
-    private func playerSessionTrack() -> AudioItem? {
-        let playerSessionId = store.state.playerSessionTrack
-        return store.state.audioItems.first(where: { $0.id == playerSessionId })
-    }
 }
 
 struct HomeScreen_Previews: PreviewProvider {
     static var previews: some View {
-        HomeScreen()
-            .environmentObject(store)
+        HomeScreen(showSoundBar: true, id: "")
+    }
+}
+
+struct SoundBarConnector: Connector {
+    
+    let id: String
+    
+    func map(store: AppStore) -> some View {
+        let track = store.state.audioItemsState.audioItems.first(where: { $0.id == id })
+        let trackId = track?.id ?? ""
+        
+        return SoundBarView(
+            title: track?.title ?? "",
+            duration: track?.duration ?? 0,
+            currentTime: Binding(
+                get: { track?.time ?? 0 },
+                set: { store.dispatch(.seek(id: trackId, to: $0)) }
+            ),
+            isPlaying: track?.state == .play,
+            onPlay: { store.dispatch(.playTrack(id: trackId)) },
+            onPause: { store.dispatch(.pauseTrack(id: trackId)) },
+            onSeek: { store.dispatch(.seek(id: trackId, to: $0)) },
+            endSeek: { store.dispatch(.endSeek(id: trackId)) },
+            endSession: { store.dispatch(.endPlayerSession) }
+        )
     }
 }
 
@@ -69,20 +82,15 @@ struct SoundBarView: View {
     // Props
     var title: String
     var duration: TimeInterval
-    var currentTime: TimeInterval
+    @Binding var currentTime: TimeInterval
     var isPlaying: Bool
     
     // Commands
-    var onPlayPause: () -> Void
+    var onPlay: () -> Void
+    var onPause: () -> Void
     var onSeek: (TimeInterval) -> Void
     var endSeek: () -> Void
     var endSession: () -> Void
-    
-    private let timer = Timer
-        .publish(every: 0.1, on: .main, in: .common)
-        .autoconnect()
-    
-    @State private var sliderValue: TimeInterval = 0
     
     var body: some View {
         VStack {
@@ -96,16 +104,16 @@ struct SoundBarView: View {
                     
                     HStack {
                         Button {
-                            onPlayPause()
+                            isPlaying ? onPause() : onPlay()
                         } label: {
                             Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
                                 .font(.system(size: 40))
                         }
                         
                         VStack {
-                            Slider(value: $sliderValue, in: 0...duration) { editing in
+                            Slider(value: $currentTime, in: 0...duration) { editing in
 
-                                onSeek(sliderValue)
+                                onSeek(currentTime)
 
                                 if !editing {
                                     endSeek()
@@ -113,11 +121,11 @@ struct SoundBarView: View {
                             }
                             
                             HStack {
-                                Text(DateComponentsFormatter.positional.string(from: sliderValue) ?? "0:00")
+                                Text(DateComponentsFormatter.positional.string(from: currentTime) ?? "0:00")
                                 
                                 Spacer()
                                 
-                                Text(DateComponentsFormatter.positional.string(from: duration - sliderValue) ?? "0:00")
+                                Text(DateComponentsFormatter.positional.string(from: duration - currentTime) ?? "0:00")
                             }
                         }
                     }
@@ -139,12 +147,6 @@ struct SoundBarView: View {
             .padding()
             .padding(.bottom, 35)
         }
-        .onAppear {
-            sliderValue = currentTime
-        }
-        .onReceive(timer) { _ in
-            if isPlaying { sliderValue += 0.1 }
-        }
     }
 }
 
@@ -153,9 +155,13 @@ struct SoundBarView_Previews: PreviewProvider {
         SoundBarView(
             title: "Track",
             duration: 1700,
-            currentTime: 0,
+            currentTime: Binding(
+                get: { 100 },
+                set: { _ in }
+            ),
             isPlaying: false,
-            onPlayPause: { },
+            onPlay: { },
+            onPause: { },
             onSeek: { _ in },
             endSeek: { },
             endSession: { }

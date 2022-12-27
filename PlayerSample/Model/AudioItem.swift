@@ -12,3 +12,16 @@ struct AudioItem: Equatable, Identifiable {
     var duration: TimeInterval
     var state: AudioItemState
 }
+
+extension AudioItem {
+    static var empty: AudioItem {
+        AudioItem(
+            id: "",
+            title: "",
+            url: URL(string: "")!,
+            time: 0,
+            duration: 500,
+            state: .pause
+        )
+    }
+}
