@@ -47,8 +47,7 @@ struct PlayerSampleApp: App {
 func setupStore() -> AppStore {
     let store = AppStore(
         state: .init(),
-        reducer: appReducer,
-        middlewares: []
+        reducer: appReducer
     )
     
     connectAudioPlayerDriver(to: store)
